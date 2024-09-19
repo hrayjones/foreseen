@@ -10,7 +10,7 @@ def define_search_space(sequence, read_length, starts_with_re1=True):
                             If False, the sequence starts with RE2.
     
     Returns:
-    dict: A dictionary containing the coordinates for Reverse Primer and Forward Primer Search Space,
+    dict: A dictionary containing the coordinates and sequence slices for Reverse Primer and Forward Primer Search Space,
           and primer labels.
     """
     # Validate read length to ensure it's between 75 and 150 bp
@@ -41,8 +41,9 @@ def define_search_space(sequence, read_length, starts_with_re1=True):
     reverse_primer_coordinates = (0, Reverse_primer_search_space_end)
     forward_primer_coordinates = (forward_primer_search_space_start, end)
     
-    # Extract the Reverse Primer Search Space
-    reverse_primer_space = sequence[0:Reverse_primer_search_space_end]
+    # Extract the Reverse Primer and Forward Primer Search Space
+    reverse_primer_search_seq = sequence[0:Reverse_primer_search_space_end]
+    forward_primer_search_seq = sequence[forward_primer_search_space_start:end]
     
     # Return details
     result = {
@@ -50,7 +51,8 @@ def define_search_space(sequence, read_length, starts_with_re1=True):
         "forward_primer_coordinates": forward_primer_coordinates,
         "reverse_primer_label": reverse_primer_label,
         "forward_primer_label": forward_primer_label,
-        "reverse_primer_space": reverse_primer_space
+        "reverse_primer_search_seq": reverse_primer_search_seq,
+        "forward_primer_search_seq": forward_primer_search_seq
     }
     
     return result
