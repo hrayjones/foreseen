@@ -33,7 +33,11 @@ def convertFragmentData(data, sequence):
     return f
 
 
-def defineSearchSpace(sequence, read_length, start_state="reading"):
+def defineSearchSpace(sequence, read_length, start_state="reading", mode="basic", SNP_location=None):
+
+   # NOTE 1: ONLY BASIC MODE WILL WORK UNTIL SNP LOCATION WRT FRAGMENT ENDS IS BROUGHT FROM UPSTREAM PIPELINE 
+   # NOTE 2: WE NEED TO BRING IN USER INPUT OF SEQUENCING READ LENGTH HERE ("read_length" argument)
+   
     """
     Defines the Reverse Primer and Forward Primer Search Space coordinates and assigns labels 
     based on the provided read length within the sequence. The start position is always set to 0.
@@ -41,19 +45,17 @@ def defineSearchSpace(sequence, read_length, start_state="reading"):
     Parameters:
     sequence (str): The genetic sequence (e.g., DNA sequence) as a string.
     read_length (int): The read length, which must be between 75 and 150 bp.
-    start_state (str): Indicates whether the sequence starts with RE1 or RE2. 
-                       Accepts "RE1" or "RE2".
+    start_state (str): Indicates whether the start of the sequence is "reading" or "non_reading".
+                       Accepts "reading" or "non_reading".
+    mode (str): Mode in which the function runs. Accepts "basic", "allele-specific", and "allele-aware".
+                Default is "basic".
+    SNP_location (int): The position of the SNP within the sequence. Required if mode is "allele-aware".
     
     Returns:
     dict: A dictionary containing the coordinates and sequence slices for Reverse Primer and Forward Primer Search Space,
           and primer labels.
-
-    ### TODO
-    ### Add the case where we want to have our genetic variant between the primer and the cut site. This can be either for RE1 or RE2
-    
     """
-    
-    # Validate read length to ensure it's between 75 and 150 bp (recommended sequencing lengths for 4C-seq)
+    # Validate read length to ensure it's between 75 and 150 bp
     if not (75 <= read_length <= 150):
         raise ValueError("Read length must be between 75 and 150 bp.")
     
@@ -61,47 +63,78 @@ def defineSearchSpace(sequence, read_length, start_state="reading"):
     start = 0
     end = len(sequence)
     
-    # Define Reverse Primer Search Space End and Forward Primer Search Space Start based on the start_state
+    # Validate start state
+    if start_state not in ["reading", "non_reading"]:
+        raise ValueError('Invalid start_state. Must be "reading" or "non_reading".')
+
+    # Validate mode
+    if mode not in ["basic", "allele-specific", "allele-aware"]:
+        raise ValueError('Invalid mode. Must be "basic", "allele-specific", or "allele-aware".')
+
+    # Validate SNP_location if mode is "allele-aware"
+    if mode == "allele-aware":
+        if SNP_location is None:
+            raise ValueError('SNP_location is required when mode is "allele-aware".')
+        # Check if SNP is within 100 bp of the start or the end of the sequence
+        if SNP_location > 100 and SNP_location < (end - 100):
+            raise ValueError("SNP must be within 100 bp of the start or end of the sequence.")
+
+    # Define default primer search space end positions based on the start_state
     if start_state == "reading":
-        Reverse_primer_search_space_end = start + (read_length - 40)
+        reverse_primer_search_space_end = start + (read_length - 40)
         forward_primer_search_space_start = end - 150
         reverse_primer_label = "Reading Primer"
         forward_primer_label = "Non-reading Primer"
-    elif start_state == "non_reading":
-        Reverse_primer_search_space_end = start + 150
+    else:  # If the start_state is "non_reading"
+        reverse_primer_search_space_end = start + 150
         forward_primer_search_space_start = end - (read_length - 40)
         reverse_primer_label = "Non-reading Primer"
         forward_primer_label = "Reading Primer"
-    else:
-        raise ValueError('Invalid start_state. Must be "reading" or "non_reading".')
     
-    # Ensure the Reverse Primer Search Space does not exceed the end position
-    if Reverse_primer_search_space_end > end:
-        Reverse_primer_search_space_end = end
+    # Adjust primer search spaces if mode is "allele-aware"
+    if mode == "allele-aware":
+        if SNP_location <= 100:
+            # SNP is within 100bp of the start; adjust the reverse primer search space to start just after SNP
+            reverse_primer_search_space_start = SNP_location + 1
+            reverse_primer_search_space_end = min(reverse_primer_search_space_end, end)
+        elif SNP_location >= (end - 100):
+            # SNP is within 100bp of the end; adjust the forward primer search space to end just before SNP
+            forward_primer_search_space_start = max(forward_primer_search_space_start, 0)
+            forward_primer_search_space_end = SNP_location
+            forward_primer_search_coordinates = (forward_primer_search_space_start, forward_primer_search_space_end)
+        else:
+            # SNP not near boundaries; keep default settings
+            reverse_primer_search_space_start = 0
+            forward_primer_search_coordinates = (forward_primer_search_space_start, end)
 
-   # Define coordinates for Reverse and Forward Primer Search Spaces
-    reverse_primer_coordinates = (0, Reverse_primer_search_space_end)
-    forward_primer_coordinates = (forward_primer_search_space_start, end)
+    # Define coordinates for Reverse and Forward Primer Search Spaces
+    reverse_primer_search_coordinates = (reverse_primer_search_space_start, reverse_primer_search_space_end)
+    forward_primer_search_coordinates = (forward_primer_search_space_start, end)
     
     # Extract the Reverse Primer and Forward Primer Search Space
-    reverse_primer_search_seq = sequence[0:Reverse_primer_search_space_end]
+    reverse_primer_search_seq = sequence[reverse_primer_search_space_start:reverse_primer_search_space_end]
     forward_primer_search_seq = sequence[forward_primer_search_space_start:end]
     
     # Return details
     result = {
-        "reverse_primer_coordinates": reverse_primer_coordinates,
-        "forward_primer_coordinates": forward_primer_coordinates,
+        "reverse_primer_search_coordinates": reverse_primer_search_coordinates,
+        "forward_primer_search_coordinates": forward_primer_search_coordinates,
         "reverse_primer_label": reverse_primer_label,
         "forward_primer_label": forward_primer_label,
         "reverse_primer_search_seq": reverse_primer_search_seq,
         "forward_primer_search_seq": forward_primer_search_seq
     }
-   return result
+    
+    return result
 
 # Example usage
-sequence = "ATGCGTACCGGTTAGCTAGGCTAGCTAGCTAGGCTA"  # Example sequence
+genetic_sequence = "ATGCGTACCGGTTAGCTAGGCTAGCTAGCTAGGCTA"  # Example sequence
 read_length = 100    # Input read length (between 75 and 150)
-start_state = "reading"  # Set to "reading" or "non_reading", set by convertFragmentData
+start_state = "reading"  # Set to "reading" or "non_reading" based on the sequence start
+mode = "allele-aware"  # Choose from "basic", "allele-specific", or "allele-aware"
+SNP_location = 80    # Position of the SNP within the sequence (required for "allele-aware" mode)
+
+
 
 def primerDesigner:
 
@@ -118,8 +151,10 @@ def primerSelector(data, sequence):
         # Define search space
         search_spaces = defineSearchSpace(
             fragmentData[frag_sequence], 
-            userInput[read_length], ### this needs to come from user input
-            fragmentData[start_state]
+            fragmentData[start_state], 
+            fragmentData[SNP_location], # this needs to come from earlier in pipeline: location of SNP in relation to fragment ends
+            userInput[read_length], # needs to come from user
+            userInput[mode], # needs to come from user
             )
         
         # Select Forward and Reverse Primer
