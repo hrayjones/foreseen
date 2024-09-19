@@ -1,7 +1,7 @@
 def define_search_space(sequence, start, end, read_length, starts_with_re1=True):
     """
-    Defines the Reverse Primer Search Space End, Forward Primer Search Space Start, 
-    and assigns labels to the primers based on provided start and end positions within the sequence.
+    Defines the Reverse Primer and Forward Primer Search Space coordinates and assigns labels 
+    based on the provided start and end positions within the sequence.
     
     Parameters:
     sequence (str): The genetic sequence (e.g., DNA sequence) as a string.
@@ -12,7 +12,7 @@ def define_search_space(sequence, start, end, read_length, starts_with_re1=True)
                             If False, the sequence starts with RE2.
     
     Returns:
-    dict: A dictionary containing the Reverse Primer Search Space, Forward Primer Search Space Start details, 
+    dict: A dictionary containing the coordinates for Reverse Primer and Forward Primer Search Space,
           and primer labels.
     """
     # Validate read length to ensure it's between 75 and 150 bp
@@ -42,15 +42,17 @@ def define_search_space(sequence, start, end, read_length, starts_with_re1=True)
     # Extract the Reverse Primer Search Space
     reverse_primer_space = sequence[start:Reverse_primer_search_space_end]
     
+    # Define coordinates for Reverse and Forward Primer Search Spaces
+    reverse_primer_coordinates = (0, Reverse_primer_search_space_end)
+    forward_primer_coordinates = (forward_primer_search_space_start, len(sequence))
+    
     # Return details
     result = {
-        "start_pos": start,
-        "end_pos": end,
-        "Reverse_primer_search_space_end": Reverse_primer_search_space_end,
-        "reverse_primer_space": reverse_primer_space,
-        "forward_primer_search_space_start": forward_primer_search_space_start,
+        "reverse_primer_coordinates": reverse_primer_coordinates,
+        "forward_primer_coordinates": forward_primer_coordinates,
         "reverse_primer_label": reverse_primer_label,
-        "forward_primer_label": forward_primer_label
+        "forward_primer_label": forward_primer_label,
+        "reverse_primer_space": reverse_primer_space
     }
     
     return result
@@ -62,6 +64,6 @@ end_position = 35    # Known end position of RE1 or RE2
 read_length = 100    # Input read length (between 75 and 150)
 starts_with_re1 = True  # Set to True if sequence starts with RE1, False if it starts with RE2
 
-# Querying the Reverse Primer Search Space, Forward Primer Search Space Start, and Primer Labels
+# Querying the Reverse Primer and Forward Primer Search Space Coordinates and Labels
 search_results = define_search_space(genetic_sequence, start_position, end_position, read_length, starts_with_re1)
 print(search_results)
