@@ -1,3 +1,6 @@
+# TODO
+### Add the case where we want to have our genetic variant between the primer and the cut site. This can be either for RE1 or RE2
+
 def define_search_space(sequence, read_length, starts_with_re1=True):
     """
     Defines the Reverse Primer and Forward Primer Search Space coordinates and assigns labels 
