@@ -6,7 +6,12 @@ dna_sequence = "AAGCTTATGCGAATTCCGGAAGCTTTGAATTCCGAATTCGAATTCGAATTCGAATTCGAATTC"
 
 
 class Fragment:
-    def __init__(self, head: int, tail: int, re1: str = None, re2: str = None):
+    def __init__(self,
+                 head: int,
+                 tail: int,
+                 re1: RestrictionEnzyme = None,
+                 re2: RestrictionEnzyme = None
+                 ):
         self.head = head  # co-ords
         self.tail = tail  # co-ords
         self.re1 = re1
@@ -19,14 +24,22 @@ def basic_re_cut(
         enzyme_list: list[RestrictionEnzyme],
         which_cut: int
 ):
+    partial_sequence = full_sequence[fragment.head:fragment.tail+1]
     fragments_list = []
-    for re in enzyme_list:
-        c_enzyme = re.complement()
-        occurrences = find_occurrences_between_patterns(full_sequence, c_enzyme)
+    for rest_enz in enzyme_list:
+        complement_enzyme = rest_enz.complement()
+        occurrences = find_occurrences_between_patterns(partial_sequence, complement_enzyme)
         for coord_start, coord_end in occurrences:
-            fragments_list.append(
-                Fragment(coord_start, coord_end)
-            )
+            if which_cut == 1:
+                fragments_list.append(
+                    Fragment(coord_start, coord_end, re1=rest_enz, re2=None)
+                )
+            elif which_cut == 2:
+                fragments_list.append(
+                    Fragment(coord_start, coord_end, re1=fragment.re1, re2=rest_enz)
+                )
+
+    return fragments_list
 
 
 class ParentSeq(Seq):
@@ -43,14 +56,19 @@ class ParentSeq(Seq):
         self.t_roi = t_roi
 
     def re1_cut(self, enzyme_list):
-        fragment = Fragment(0, len(self.full_sequence))
-        return basic_re_cut(
+        fragment = Fragment(0, len(self.full_sequence) - 1)
+        self.re1_fragments = basic_re_cut(
             full_sequence=self.full_sequence,
             fragment=fragment,
             enzyme_list=enzyme_list,
             which_cut=1
         )
 
-    def re2_cut(self):
-        fragments = basic_re_cut()
-        pass
+    def re2_cut(self, enzyme_list):
+        for fragment in self.re1_fragments:
+            self.re2_fragments += basic_re_cut(
+                full_sequence=self.full_sequence,
+                fragment=fragment,
+                enzyme_list=enzyme_list,
+                which_cut=2
+            )
