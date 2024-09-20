@@ -1,5 +1,6 @@
-
 <img src="https://github.com/hrayjones/foreseen/blob/main/foreseen.jpg?raw=true" width="300">
+
+*** UNDER DEVELOPMENT ***
 
 An automated pipeline for 4C-seq experimental design, with or without genetic variants of interest
 
