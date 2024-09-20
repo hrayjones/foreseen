@@ -16,7 +16,8 @@ class Fragment:
         self.tail = tail  # co-ords
         self.re1 = re1
         self.re2 = re2
-
+    def size(self):
+        return abs(self.tail - self.head)
 
 def basic_re_cut(
         full_sequence: str,
@@ -62,23 +63,35 @@ class ParentSeq(Seq):
         self.re1_fragments = []
         self.re2_fragments = []
 
+        self.re1_options = []
+        self.re2_options = []
+
         self.h_roi = h_roi
         self.t_roi = t_roi
 
     def re1_cut(self, enzyme_list):
         fragment = Fragment(0, len(self.full_sequence) - 1)
-        self.re1_fragments = basic_re_cut(
+        self.re1_fragments_ = basic_re_cut(
             full_sequence=self.full_sequence,
             fragment=fragment,
             enzyme_list=enzyme_list,
             which_cut=1
         )
+        for frag in self.re1_fragments_:
+            if self.h_roi <= frag.head <self.t_roi or self.h_roi < frag.tail <= self.t_roi:
+                self.re1_fragments.append(frag)
+        self.re1_options = [frag.re1 for frag in self.re1_fragments]
 
     def re2_cut(self, enzyme_list):
         for fragment in self.re1_fragments:
-            self.re2_fragments += basic_re_cut(
+            self.re2_fragments_ += basic_re_cut(
                 full_sequence=self.full_sequence,
                 fragment=fragment,
                 enzyme_list=enzyme_list,
                 which_cut=2
             )
+        for frag in self.re2_fragments_:
+                if self.h_roi <= frag.head <self.t_roi or self.h_roi < frag.tail <= self.t_roi:
+                    if 200 <= fragment.size() <= 1500:
+                        self.re2_fragments.append(frag)
+        self.re2_options = [frag.re2 for frag in self.re2_fragments]
