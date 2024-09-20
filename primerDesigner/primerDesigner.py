@@ -138,7 +138,124 @@ SNP_location = 80    # Position of the SNP within the sequence (required for "al
 
 def primerDesigner:
 
-def primerMatcher:
+def primerMatcher(forward_primers, reverse_primers, forward_template_length):
+    """
+    Matches forward and reverse primers from two different runs of Primer3, scoring them based on product size,
+    melting temperature similarity, and GC content similarity.
+
+    Args:
+        forward_primers (dict): A dictionary with forward primer IDs as keys and a dictionary of properties 
+                                (sequence, penalty, melting temperature, GC content, start, end) as values.
+        reverse_primers (dict): A dictionary with reverse primer IDs as keys and a dictionary of properties 
+                                (sequence, penalty, melting temperature, GC content, start, end) as values.
+        forward_template_length (int): The length of the template sequence for the forward primer.
+
+    Returns:
+        list: A ranked list of paired primers, scored and sorted.
+    """
+    def calculate_product_size(forward_end, reverse_start, forward_template_length):
+        # Calculate the product size based on the positions of the primers on the template
+        return (forward_template_length - forward_end) + reverse_start
+    
+    def score_melting_temp(Tm_f, Tm_r):
+        # Score the similarity of melting temperatures between forward and reverse primers (closer is better)
+        return abs(Tm_f - Tm_r)
+    
+    def score_gc_content(gc_f, gc_r):
+        # Score the similarity of GC content between forward and reverse primers (closer is better)
+        return abs(gc_f - gc_r)
+    
+    def score_product_size(product_size):
+        # Score product size, smaller product sizes score better (penalty increases with size)
+        return product_size
+    
+    paired_primers = []
+
+    # Iterate through all possible pairs of forward and reverse primers
+    for f_primer, f_props in forward_primers.items():
+        for r_primer, r_props in reverse_primers.items():
+            # Calculate the product size
+            product_size = calculate_product_size(
+                f_props['end'], 
+                r_props['start'], 
+                forward_template_length
+            )
+            
+            # Calculate scores based on melting temperature, GC content, and product size
+            tm_score = score_melting_temp(f_props['melting_temp'], r_props['melting_temp'])
+            gc_score = score_gc_content(f_props['gc_content'], r_props['gc_content'])
+            product_size_score = score_product_size(product_size)
+            
+            # Combine scores (the lower the score, the better)
+            total_score = tm_score + gc_score + product_size_score
+            
+            # Append the primer pair and its scores
+            paired_primers.append({
+                'forward_primer_id': f_primer,
+                'forward_primer_sequence': f_props['sequence'],
+                'reverse_primer_id': r_primer,
+                'reverse_primer_sequence': r_props['sequence'],
+                'product_size': product_size,
+                'tm_score': tm_score,
+                'gc_score': gc_score,
+                'product_size_score': product_size_score,
+                'total_score': total_score
+            })
+
+    # Sort the primer pairs by total score (ascending)
+    ranked_primers = sorted(paired_primers, key=lambda x: x['total_score'])
+    
+    return ranked_primers
+
+# Example input
+forward_primers = {
+    'F1': {
+        'sequence': 'AGCTAGCTAGCTAGCTAGCT', 
+        'penalty': 1.0, 
+        'melting_temp': 60.5, 
+        'gc_content': 50.0, 
+        'start': 10, 
+        'end': 30
+    },
+    'F2': {
+        'sequence': 'CGTACGTACGTACGTACGTA', 
+        'penalty': 0.8, 
+        'melting_temp': 62.0, 
+        'gc_content': 52.0, 
+        'start': 20, 
+        'end': 40
+    },
+}
+
+reverse_primers = {
+    'R1': {
+        'sequence': 'TGCATGCATGCATGCATGCA', 
+        'penalty': 1.2, 
+        'melting_temp': 61.0, 
+        'gc_content': 51.0, 
+        'start': 100, 
+        'end': 120
+    },
+    'R2': {
+        'sequence': 'ATCGATCGATCGATCGATCG', 
+        'penalty': 0.9, 
+        'melting_temp': 63.5, 
+        'gc_content': 53.0, 
+        'start': 110, 
+        'end': 130
+    },
+}
+
+forward_template_length = 150
+
+# Running the function
+ranked_pairs = match_primers(forward_primers, reverse_primers, forward_template_length)
+
+# Output the ranked primer pairs
+for pair in ranked_pairs:
+    print(pair)
+
+   
 
 def primerSelector(data, sequence):
 
