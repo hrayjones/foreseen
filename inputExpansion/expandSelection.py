@@ -3,12 +3,17 @@
    Run as "expandSelection.py [inputSequence] or [input_position] {optional arguments --snp_pos}"
    Input sequence can either be in a .fasta or .fna format
    Input position must be in format of "ChrX [start_pos] [end_pos]"
+   snp_pos denotes the relative position within a fasta file and the genomic position when using positional arguments.
+   The outputted snp_pos are all relative to their related sequences
 
    Example standard input using a fasta or fna file
    python3 expandSelection.py file.fna
 
+   Example of snp_pos aware using a fasta or fna file
+   python3 expandSelection.py file.fna --snp_pos 234
+   
    Example of snp_pos aware using positional input argument
-   python3 expandSelection.py "Chr7 50000 51000" --snp_pos 50005
+   python3 expandSelection.py "Chr7 50000 51000" --snp_pos 50234
 
    To run local the following must be in the running directory:
    human_genome_db - see GITHUB
@@ -99,6 +104,7 @@ def search_and_expand_selection(input,snp_pos):
             "start": int(input_string.split()[1]),
             "end": int(input_string.split()[2])
         }
+        snp_pos = snp_pos - hit[start]
 
     # Expand selection
     if hit:
