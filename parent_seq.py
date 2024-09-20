@@ -24,6 +24,7 @@ class Fragment:
     def size(self):
         return abs(self.tail - self.head)
 
+
 def basic_re_cut(
         full_sequence: str,
         fragment: Fragment,
