@@ -184,7 +184,7 @@ def primerDesigner(seq_id, forward_primer_search_seq, reverse_primer_search_seq)
    return forward_primers_dict, reverse_primers_dict
 
 
-def primerMatcher(forward_primers, reverse_primers, forward_template_length):
+def primerMatcher(forward_primers_dict, reverse_primers_dict, forward_template_length):
     """
     Matches forward and reverse primers from two different runs of Primer3, scoring them based on product size,
     melting temperature similarity, and GC content similarity.
