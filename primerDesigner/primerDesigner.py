@@ -136,7 +136,56 @@ SNP_location = 80    # Position of the SNP within the sequence (required for "al
 
 
 
-def primerDesigner:
+def primerDesigner(seq_id, forward_primer_search_seq, reverse_primer_search_seq):
+   forward_primers_dict = primer3.bindings.design_primers(seq_args={'SEQUENCE_ID': seq_id ,'SEQUENCE_TEMPLATE': 
+                              forward_primer_search_seq}, 
+                             global_args={
+                             'PRIMER_OPT_SIZE': 20,
+                             'PRIMER_PICK_INTERNAL_OLIGO': 1,
+                             'PRIMER_PICK_LEFT_PRIMER': 1,
+                             'PRIMER_PICK_RIGHT_PRIMER': 0,
+                             'PRIMER_INTERNAL_MAX_SELF_END': 8,
+                             'PRIMER_MIN_SIZE': 18,
+                             'PRIMER_MAX_SIZE': 25,
+                             'PRIMER_OPT_TM': 60.0,
+                             'PRIMER_MIN_TM': 57.0,
+                             'PRIMER_MAX_TM': 63.0,
+                             'PRIMER_MIN_GC': 20.0,
+                             'PRIMER_MAX_GC': 80.0,
+                             'PRIMER_MAX_POLY_X': 100,
+                             'PRIMER_INTERNAL_MAX_POLY_X': 100,
+                             'PRIMER_SALT_MONOVALENT': 50.0,
+                             'PRIMER_DNA_CONC': 50.0,
+                             'PRIMER_MAX_NS_ACCEPTED': 0,
+                             'PRIMER_MAX_SELF_ANY': 12,
+                             'PRIMER_MAX_SELF_END': 8})
+
+
+   reverse_primers_dict = primer3.bindings.design_primers(seq_args={'SEQUENCE_ID': seq_id ,'SEQUENCE_TEMPLATE': 
+                              reverse_primer_search_seq}, 
+                             global_args={
+                             'PRIMER_OPT_SIZE': 20,
+                             'PRIMER_PICK_INTERNAL_OLIGO': 1,
+                             'PRIMER_PICK_LEFT_PRIMER': 0,
+                             'PRIMER_PICK_RIGHT_PRIMER': 1,
+                             'PRIMER_INTERNAL_MAX_SELF_END': 8,
+                             'PRIMER_MIN_SIZE': 18,
+                             'PRIMER_MAX_SIZE': 25,
+                             'PRIMER_OPT_TM': 60.0,
+                             'PRIMER_MIN_TM': 57.0,
+                             'PRIMER_MAX_TM': 63.0,
+                             'PRIMER_MIN_GC': 20.0,
+                             'PRIMER_MAX_GC': 80.0,
+                             'PRIMER_MAX_POLY_X': 100,
+                             'PRIMER_INTERNAL_MAX_POLY_X': 100,
+                             'PRIMER_SALT_MONOVALENT': 50.0,
+                             'PRIMER_DNA_CONC': 50.0,
+                             'PRIMER_MAX_NS_ACCEPTED': 0,
+                             'PRIMER_MAX_SELF_ANY': 12,
+                             'PRIMER_MAX_SELF_END': 8})
+   
+   return forward_primers_dict, reverse_primers_dict
+
 
 def primerMatcher(forward_primers, reverse_primers, forward_template_length):
     """
