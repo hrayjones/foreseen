@@ -29,6 +29,11 @@ def convertFragmentData(fragment: Fragment, sequence):
         }
     return f
 
+def seq_id(re1, re2, start_point, end_point, start_state, end_state):
+   forward_primer_seq_id = "_".join(map(str, [re1, re2, start_point, end_point, start_state]))
+   reverse_primer_seq_id = "_".join(map(str, [re1, re2, start_point, end_point, end_state]))
+   return forward_primer_seq_id, reverse_primer_seq_id
+
 
 def defineSearchSpace(sequence, read_length, start_state="reading", mode="basic", SNP_location=None):
 
@@ -131,9 +136,9 @@ start_state = "reading"  # Set to "reading" or "non_reading" based on the sequen
 mode = "allele-aware"  # Choose from "basic", "allele-specific", or "allele-aware"
 SNP_location = 80    # Position of the SNP within the sequence (required for "allele-aware" mode)
 
-## Define seq_id
 
-def primerDesigner(seq_id, forward_primer_search_seq, reverse_primer_search_seq):
+def primerDesigner(forward_primer_seq_id, forward_primer_search_seq, reverse_primer_search_seq):
+   
    forward_primers_dict = primer3.bindings.design_primers(seq_args={'SEQUENCE_ID': seq_id ,'SEQUENCE_TEMPLATE': 
                               forward_primer_search_seq}, 
                              global_args={
@@ -158,7 +163,7 @@ def primerDesigner(seq_id, forward_primer_search_seq, reverse_primer_search_seq)
                              'PRIMER_MAX_SELF_END': 8})
 
 
-   reverse_primers_dict = primer3.bindings.design_primers(seq_args={'SEQUENCE_ID': seq_id ,'SEQUENCE_TEMPLATE': 
+   reverse_primers_dict = primer3.bindings.design_primers(seq_args={'SEQUENCE_ID': reverse_primer_seq_id ,'SEQUENCE_TEMPLATE': 
                               reverse_primer_search_seq}, 
                              global_args={
                              'PRIMER_OPT_SIZE': 20,
