@@ -24,17 +24,18 @@ def basic_re_cut(
         enzyme_list: list[RestrictionEnzyme],
         which_cut: int
 ):
-    partial_sequence = full_sequence[fragment.head:fragment.tail+1]
+    partial_sequence = full_sequence[fragment.head:fragment.tail + 1]
     fragments_list = []
     for rest_enz in enzyme_list:
         complement_enzyme = rest_enz.complement()
         occurrences = find_occurrences_between_patterns(partial_sequence, complement_enzyme)
-        for coord_start, coord_end in occurrences:
-            if which_cut == 1:
+        if which_cut == 1:
+            for coord_start, coord_end in occurrences:
                 fragments_list.append(
                     Fragment(coord_start, coord_end, re1=rest_enz, re2=None)
                 )
-            elif which_cut == 2:
+        elif which_cut == 2:
+            for coord_start, coord_end in [occurrences[0], occurrences[-1]]:
                 fragments_list.append(
                     Fragment(coord_start, coord_end, re1=fragment.re1, re2=rest_enz)
                 )
@@ -46,8 +47,6 @@ class ParentSeq(Seq):
     def __init__(self, str_seq: str, h_roi: int, t_roi: int):
         super().__init__(str_seq)
         self.full_sequence = str_seq
-        self.re1_cut = False
-        self.re2_cut = False
 
         self.re1_fragments = []
         self.re2_fragments = []
