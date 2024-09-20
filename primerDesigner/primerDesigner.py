@@ -145,9 +145,9 @@ def primerMatcher(forward_primers, reverse_primers, forward_template_length):
 
     Args:
         forward_primers (dict): A dictionary with forward primer IDs as keys and a dictionary of properties 
-                                (sequence, penalty, melting temperature, GC content, start, end) as values.
+                                (sequence, penalty, melting temperature, GC content, start, end) as values. ### NAMES NEED MATCHING TO PRIMER3
         reverse_primers (dict): A dictionary with reverse primer IDs as keys and a dictionary of properties 
-                                (sequence, penalty, melting temperature, GC content, start, end) as values.
+                                (sequence, penalty, melting temperature, GC content, start, end) as values. ### NAMES NEED MATCHING TO PRIMER3
         forward_template_length (int): The length of the template sequence for the forward primer.
 
     Returns:
