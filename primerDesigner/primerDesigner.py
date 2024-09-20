@@ -5,28 +5,25 @@
 import os
 import sys
 import argparse
+from parent_seq import Fragment
 
-# Functions ---------------------------------
-
-def convertFragmentData(data, sequence):
-
-    # NOTE PARSING WILL CHANGE DEPENDING ON OUTPUT OF PREVIOUS STEP
-    # Split data into different parts
-    start_RE = data.split()[0]
-    if start_RE = 1:
+Functions ---------------------------------
+def convertFragmentData(fragment: Fragment, sequence):
+    assert fragment.re2_head is not None, "enzyme cutting wasn't done properly"
+    if not fragment.re2_head:
         start_state = "reading"
         end_state = "non_reading"
-    else:
+    elif fragment.re2_head:
         start_state = "non_reading"
         end_state = "reading"
-    start_point = data.split()[1]
-    end_point = data.split()[2]
-    # Convert to sequence and assign which end is reading or non reading for each fragment
-    frag_sequence = sequence[[start_point]:[end_point]]
+
+    start_point = fragment.head
+    end_point = fragment.tail
+    frag_sequence = sequence[fragment.head:fragment.tail+1]
     f = {
             "frag_sequence":frag_sequence,
-            "start_point":start_point,
-            "end_point":end_point,
+            "start_point":fragment.head,
+            "end_point":fragment.tail,
             "start_state":start_state,
             "end_state":end_state
         }
