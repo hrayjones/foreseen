@@ -1,6 +1,6 @@
 from Bio.Seq import Seq
 from restriction_enzymes import RestrictionEnzyme
-from utils import find_occurrences_between_patterns
+from utils import find_occurrences_between_patterns, find_left_and_right_most_occurrences
 
 dna_sequence = "AAGCTTATGCGAATTCCGGAAGCTTTGAATTCCGAATTCGAATTCGAATTCGAATTCGAATTC"
 
@@ -28,14 +28,15 @@ def basic_re_cut(
     fragments_list = []
     for rest_enz in enzyme_list:
         complement_enzyme = rest_enz.complement()
-        occurrences = find_occurrences_between_patterns(partial_sequence, complement_enzyme)
         if which_cut == 1:
+            occurrences = find_occurrences_between_patterns(partial_sequence, complement_enzyme)
             for coord_start, coord_end in occurrences:
                 fragments_list.append(
                     Fragment(coord_start, coord_end, re1=rest_enz, re2=None)
                 )
         elif which_cut == 2:
-            for coord_start, coord_end in [occurrences[0], occurrences[-1]]:
+            occurrences = find_left_and_right_most_occurrences(partial_sequence, complement_enzyme)
+            for coord_start, coord_end in occurrences:
                 fragments_list.append(
                     Fragment(coord_start, coord_end, re1=fragment.re1, re2=rest_enz)
                 )
