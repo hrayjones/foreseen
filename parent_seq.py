@@ -32,13 +32,23 @@ def basic_re_cut(
             occurrences = find_occurrences_between_patterns(partial_sequence, complement_enzyme)
             for coord_start, coord_end in occurrences:
                 fragments_list.append(
-                    Fragment(coord_start, coord_end, re1=rest_enz, re2=None)
+                    Fragment(coord_start+rest_enz.head_add, coord_end+rest_enz.tail_add, re1=rest_enz, re2=None)
                 )
         elif which_cut == 2:
             occurrences = find_left_and_right_most_occurrences(partial_sequence, complement_enzyme)
-            for coord_start, coord_end in occurrences:
+            if occurrences:
+                coord_start, coord_end = occurrences[0]
+                new_head = fragment.head + coord_start
+                new_tail = fragment.head + coord_end + rest_enz.tail_add
                 fragments_list.append(
-                    Fragment(coord_start, coord_end, re1=fragment.re1, re2=rest_enz)
+                    Fragment(new_head, new_tail, re1=fragment.re1, re2=rest_enz)
+                )
+
+                coord_start, coord_end = occurrences[1]
+                new_head = fragment.head + coord_start + rest_enz.head_add
+                new_tail = fragment.head + coord_end
+                fragments_list.append(
+                    Fragment(new_head, new_tail, re1=fragment.re1, re2=rest_enz)
                 )
 
     return fragments_list
