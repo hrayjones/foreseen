@@ -7,7 +7,7 @@ import sys
 import argparse
 from parent_seq import Fragment
 
-Functions ---------------------------------
+#Functions ---------------------------------
 def convertFragmentData(fragment: Fragment, sequence):
     assert fragment.re2_head is not None, "enzyme cutting wasn't done properly"
     if not fragment.re2_head:
