@@ -10,12 +10,16 @@ class Fragment:
                  head: int,
                  tail: int,
                  re1: RestrictionEnzyme = None,
-                 re2: RestrictionEnzyme = None
+                 re2: RestrictionEnzyme = None,
+                 re2_head: bool = None
                  ):
         self.head = head  # co-ords
         self.tail = tail  # co-ords
         self.re1 = re1
         self.re2 = re2
+
+        # Needed in primers, to determine if the head was cut by RE1 or by RE2
+        self.re2_head = re2_head
 
 
 def basic_re_cut(
@@ -41,14 +45,14 @@ def basic_re_cut(
                 new_head = fragment.head + coord_start
                 new_tail = fragment.head + coord_end + rest_enz.tail_add
                 fragments_list.append(
-                    Fragment(new_head, new_tail, re1=fragment.re1, re2=rest_enz)
+                    Fragment(new_head, new_tail, re1=fragment.re1, re2=rest_enz, re2_head=False)
                 )
 
                 coord_start, coord_end = occurrences[1]
                 new_head = fragment.head + coord_start + rest_enz.head_add
                 new_tail = fragment.head + coord_end
                 fragments_list.append(
-                    Fragment(new_head, new_tail, re1=fragment.re1, re2=rest_enz)
+                    Fragment(new_head, new_tail, re1=fragment.re1, re2=rest_enz, re2_head=True)
                 )
 
     return fragments_list
