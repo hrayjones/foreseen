@@ -131,7 +131,7 @@ start_state = "reading"  # Set to "reading" or "non_reading" based on the sequen
 mode = "allele-aware"  # Choose from "basic", "allele-specific", or "allele-aware"
 SNP_location = 80    # Position of the SNP within the sequence (required for "allele-aware" mode)
 
-
+## Define seq_id
 
 def primerDesigner(seq_id, forward_primer_search_seq, reverse_primer_search_seq):
    forward_primers_dict = primer3.bindings.design_primers(seq_args={'SEQUENCE_ID': seq_id ,'SEQUENCE_TEMPLATE': 
