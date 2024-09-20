@@ -18,7 +18,8 @@ def find_occurrences_between_patterns(string: str, pattern: str):
 
 def find_left_and_right_most_occurrences(string: str, pattern: str):
     occurrences_coordinates = []
-    occurrences_coordinates.append((0, string.find(pattern) - 1))
-    occurrences_coordinates.append((string.rfind(pattern) + len(pattern), len(string) - 1))
+    if pattern in string:
+        occurrences_coordinates.append((0, string.find(pattern) - 1))
+        occurrences_coordinates.append((string.rfind(pattern) + len(pattern), len(string) - 1))
 
     return occurrences_coordinates
