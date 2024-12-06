@@ -4,12 +4,18 @@
 
 <p align="center">
 ***** UNDER DEVELOPMENT *****
+</p>
 
-*** TODO: ***
+__TODO__:
+
 Make diagram for the main workflow
+
 Add requirements
+
 Add installation instructions
+
 Add basic usage instructions
+
 </p>
 
 ## Foreseen: An automated pipeline for 4C-seq experimental design, with or without genetic variants of interest
@@ -35,7 +41,8 @@ Foreseen works off the basic principles, as outlined by prior publications, for 
 
 The main steps in Foreseen are as follows:
 1) __Expand region of interest__
-   given a 
+
+Given a region of interest, which may be from 
 
 ## References
 <a id="1">[1]</a> 
