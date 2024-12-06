@@ -1,4 +1,4 @@
-<img src="https://github.com/hrayjones/foreseen/blob/main/foreseen.jpg?raw=true" width="300">
+<img src="https://github.com/hrayjones/foreseen/blob/main/foreseen.png?raw=true" width="300">
 
 *** UNDER DEVELOPMENT ***
 
