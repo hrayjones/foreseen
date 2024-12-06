@@ -4,6 +4,12 @@
 
 <p align="center">
 ***** UNDER DEVELOPMENT *****
+
+*** TODO: ***
+Make diagram for the main workflow
+Add requirements
+Add installation instructions
+Add basic usage instructions
 </p>
 
 ## Foreseen: An automated pipeline for 4C-seq experimental design, with or without genetic variants of interest
@@ -25,5 +31,20 @@
 3) __Allele-aware__ (4C-seq that yields separable sequencing results for both alleles of a SNP of interest in a heterozygous sample)
 
 ## How does Foreseen work?
+Foreseen works off the basic principles, as outlined by prior publications, for the best 4C-seq experimental designs [[1]](#1)[[2]](#2).
 
+The main steps in Foreseen are as follows:
+1) __Expand region of interest__
+   given a 
+
+## References
+<a id="1">[1]</a> 
+Krijger, Peter H.L., Geert Geeven, Valerio Bianchi, Catharina R.E. Hilvering, and Wouter de Laat (2020).
+4C-Seq from Beginning to End: A Detailed Protocol for Sample Preparation and Data Analysis. 
+Genome Architecture, 170 (January):17–32.
+
+<a id="2">[2]</a> 
+Miranda, Mélanie, Daan Noordermeer, and Benoit Moindrot (2022). 
+Detection of Allele-Specific 3D Chromatin Interactions Using High-Resolution In-Nucleus 4C-Seq. 
+Methods in Molecular Biology (Clifton, N.J.) 2532:15–33.
 
