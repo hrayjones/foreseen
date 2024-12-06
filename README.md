@@ -1,8 +1,12 @@
-<img src="https://github.com/hrayjones/foreseen/blob/main/foreseen.png?raw=true" width="300">
+<p align="center">
+  <img src="https://github.com/hrayjones/foreseen/blob/main/foreseen.png?raw=true" width="300">
+</p>
 
+<p align="center">
 ***** UNDER DEVELOPMENT *****
+</p>
 
-An automated pipeline for 4C-seq experimental design, with or without genetic variants of interest
+## Foreseen: An automated pipeline for 4C-seq experimental design, with or without genetic variants of interest
 
 ### There are three possible input modes:
 1) __Basic__ (classic 4C-seq)
