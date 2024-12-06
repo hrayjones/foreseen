@@ -16,6 +16,8 @@ Add installation instructions
 
 Add basic usage instructions
 
+Update the main workflow with specifics
+
 </p>
 
 ## Foreseen: An automated pipeline for 4C-seq experimental design, with or without genetic variants of interest
@@ -42,8 +44,21 @@ Foreseen works off the basic principles, as outlined by prior publications, for 
 The main steps in Foreseen are as follows:
 1) __Expand region of interest__
 
-Given a region of interest, which may be from 
+Given a region of interest, which may be in the form of genomic coordinates or sequence (fasta), extend the edges in order to capture the most useful restriction cut sites in relatively close proximity to the region of interest. If the input region is <1000 bp, the default action is to expand by 2000bp each way. If the region is >1000bp, then it is expanded by 1000bp each way.
 
+2) __Explore restriction enzyme combinations with in silico digestion__
+
+Foreseen uses input lists of valid restriction enzymes that can be used for 4C-seq experiments. It checks that the resultant viewpoint fragments are "non blind", i.e. they are flanked by both restriction enzyme 1 (RE1) and restriction enzyme 2 (RE2), and that they are of an optimal length for digestion and ligation in the 4C-seq experiment (200-1500bp). If the _allele-aware_ mode is used, the enzymes will only be selected if the given SNP falls within 100bp of a restriction cut site. If the _allele-specific_ mode is used, the SNP must affect a (non-N) base within one of the restriction cut sites.
+
+3) __Identify primers__
+
+Reading and non-reading primers are first identified separately, using Primer3 software. Primers must fall within close proximity to the cut sites, as recommended in [[1]](#1) and [[2]](#2). This is defined in part by the expected length of sequencing reads, supplied by the user. If the _allele-aware_ mode is used, the SNP must fall between the primary restriction cut site and the reading primer (or the secondary restriction cut site and the non-reading primer, in the case of paired end sequencing). Primers are then paired up based on their molecular properties (GC content, melting temperature and product size).
+
+4) __Generate final design score__
+
+A score is generated for all valid combinations of restriction enzymes and primers. The output is a ranked list of experimental designs. 
+
+ 
 ## References
 <a id="1">[1]</a> 
 Krijger, Peter H.L., Geert Geeven, Valerio Bianchi, Catharina R.E. Hilvering, and Wouter de Laat (2020).
