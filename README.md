@@ -25,7 +25,9 @@ Update the main workflow with specifics
 4C-seq is a powerful method for profiling the 3D genome at specific genomic regions of interest. Depending on the design, a 4C-seq experiment can be used to identify chromatin interactions in a genotype-specific fashion, which has clear utility in resolving the effect of genotype on gene regulatory mechanisms. However, designing 4C-seq is complicated and time-consuming. Moreover, a manual design process does not necessarily explore all possibilities for experimental design. The foreseen pipeline automates the design process, taking as input a genomic locus and running through all possible combinations of valid restriction enzymes and primers to suggest the most optimal experimenal parameters for the 4C-seq experiment.
 
 ### Requirements
-- perl
+- Python version XXX
+- Primer 3
+- ...
 
 ### Installation
 *installation instructions*
