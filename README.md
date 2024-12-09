@@ -60,6 +60,10 @@ Reading and non-reading primers are first identified separately, using Primer3 s
 
 A score is generated for all valid combinations of restriction enzymes and primers. The output is a ranked list of experimental designs. 
 
+<p align="center">
+  <img src="https://github.com/hrayjones/foreseen/blob/helen/foreseen_overview.png?raw=true" width="800">
+</p>
+
  
 ## References
 <a id="1">[1]</a> 
